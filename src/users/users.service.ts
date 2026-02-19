@@ -23,7 +23,7 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    if (!isValidObjectId(id)) throw new BadRequestException('invalid mongo id');
+    if (!isValidObjectId(id)) throw new BadRequestException('Invalid mongo id');
     const user = await this.userModel.findById(id).select('-password');
     if (!user) throw new NotFoundException('user not found');
     return user;
