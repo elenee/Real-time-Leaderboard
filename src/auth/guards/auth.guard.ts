@@ -21,6 +21,10 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = this.jwtService.verify(token);
       request.userId = payload.userId;
+      request.user = {
+        userId: payload.userId,
+        role: payload.role,
+      };
     } catch (error) {
       throw new UnauthorizedException();
     }
@@ -29,7 +33,7 @@ export class AuthGuard implements CanActivate {
 
   getToken(headers) {
     if (!headers['authorization']) return null;
-    const [type, token] = headers['authorization'].split(" ");
+    const [type, token] = headers['authorization'].split(' ');
     return type === 'Bearer' ? token : null;
   }
 }
