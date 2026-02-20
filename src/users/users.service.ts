@@ -2,16 +2,39 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { isValidObjectId, Model } from 'mongoose';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { Role } from 'src/auth/enums/role.enum';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
   constructor(@InjectModel('User') private userModel: Model<User>) {}
+
+  async onModuleInit() {
+    await this.seedAdmin();
+  }
+
+  private async seedAdmin() {
+    const existingAdmin = await this.userModel.findOne({ role: 'admin' });
+    if (!existingAdmin) {
+      const username = process.env.ADMIN_USER;
+      const email = process.env.ADMIN_EMAIL;
+      const password = process.env.ADMIN_PASSW;
+      const hashedPasswd = await bcrypt.hash(password, 10);
+      await this.userModel.create({
+        username,
+        email,
+        password: hashedPasswd,
+        role: 'admin',
+      });
+    }
+  }
 
   async create(createUserDto: CreateUserDto) {
     const user = await this.userModel.create(createUserDto);
@@ -48,5 +71,13 @@ export class UsersService {
     const user = await this.userModel.findByIdAndDelete(id);
     if (!user) throw new NotFoundException('user not found');
     return user;
+  }
+
+  async upateRole(userId: string, newRole: Role) {
+    return await this.userModel.findByIdAndUpdate(
+      userId,
+      { role: newRole },
+      { new: true },
+    );
   }
 }
