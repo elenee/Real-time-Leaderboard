@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  # Redis - The High-Speed Leaderboard Engine
+  redis:
+    image: redis:alpine
+    container_name: leaderboard-redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  # MongoDB - The Permanent History Store
+  mongodb:
+    image: mongo:latest
+    container_name: leaderboard-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: leaderboard_db
+    restart: always
+
+volumes:
+  mongo-data:
