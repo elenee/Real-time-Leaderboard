@@ -11,6 +11,7 @@ import { GamesModule } from 'src/games/games.module';
     MongooseModule.forFeature([{ name: 'Score', schema: ScoreSchema }]),
     UsersModule,
     GamesModule,
+    
   ],
   controllers: [ScoresController],
   providers: [ScoresService],

@@ -7,6 +7,9 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GamesModule } from './games/games.module';
 import { ScoresModule } from './scores/scores.module';
+import { RedisModule } from './redis/redis.module';
+import { RedisService } from './redis/redis.service';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
   imports: [
@@ -16,8 +19,10 @@ import { ScoresModule } from './scores/scores.module';
     AuthModule,
     GamesModule,
     ScoresModule,
+    RedisModule,
+    LeaderboardModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RedisService],
 })
 export class AppModule {}
