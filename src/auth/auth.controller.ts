@@ -18,10 +18,15 @@ export class AuthController {
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
-  
+
   @UseGuards(JwtAuthGuard)
   @Get('me')
   currentUser(@User() userId) {
     return this.authService.currentUser(userId);
+  }
+
+  @Post('refresh')
+  refreshToken(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refreshAccessToken(refreshToken);
   }
 }
