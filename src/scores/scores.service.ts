@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateScoreDto } from './dto/create-score.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Score } from './entities/score.entity';
 import { RedisService } from 'src/redis/redis.service';
+import { AppGateway } from 'src/gateway/gateway.gateway';
 
 @Injectable()
 export class ScoresService {
   constructor(
     @InjectModel('Score') private scoreModel: Model<Score>,
+    @Inject() private readonly appGateway: AppGateway,
     private readonly redisService: RedisService,
   ) {}
 
@@ -19,12 +21,17 @@ export class ScoresService {
       userId,
     });
 
-    console.log(userId, createScoreDto.gameId, createScoreDto.score);
     await this.redisService.addScore(
       userId,
       createScoreDto.gameId,
       createScoreDto.score,
     );
+
+    await this.appGateway.emitLeaderboardUpdate(
+      createScoreDto.gameId,
+      await this.redisService.getTopScores(createScoreDto.gameId, 10),
+    );
+
     return score;
   }
 

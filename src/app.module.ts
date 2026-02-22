@@ -10,6 +10,7 @@ import { ScoresModule } from './scores/scores.module';
 import { RedisModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     ScoresModule,
     RedisModule,
     LeaderboardModule,
+    GatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService, RedisService],

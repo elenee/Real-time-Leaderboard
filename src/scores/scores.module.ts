@@ -5,12 +5,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ScoreSchema } from './entities/score.entity';
 import { UsersModule } from 'src/users/users.module';
 import { GamesModule } from 'src/games/games.module';
+import { GatewayModule } from 'src/gateway/gateway.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Score', schema: ScoreSchema }]),
     UsersModule,
     GamesModule,
+    GatewayModule
   ],
   controllers: [ScoresController],
   providers: [ScoresService],
