@@ -8,6 +8,6 @@ import { GameSchema } from './entities/game.entity';
   imports: [MongooseModule.forFeature([{ name: 'Game', schema: GameSchema }])],
   controllers: [GamesController],
   providers: [GamesService],
-  exports: [GamesService],
+  exports: [GamesService, MongooseModule],
 })
 export class GamesModule {}

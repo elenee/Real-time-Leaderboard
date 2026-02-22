@@ -57,4 +57,19 @@ export class RedisService {
 
     return await this.redis.zrem(key, userId);
   }
+
+  async getAllKeys() {
+    return this.redis.keys('leaderboard:*');
+  }
+
+  async getAllGamesTopScores() {
+    const keys = await this.getAllKeys();
+    const leaderboard: any = [];
+    for (const key of keys) {
+      const [gameId] = key.split(':').splice(-1);
+      const topScores = await this.getTopScores(gameId, 10);
+      leaderboard.push({ gameId, topScores });
+    }
+    return leaderboard;
+  }
 }

@@ -31,4 +31,23 @@ export class ScoresService {
   findAll() {
     return this.scoreModel.find();
   }
+
+  async playersReport(gameId: string, from: Date, to: Date, limit: string) {
+    return this.scoreModel.aggregate([
+      {
+        $match: {
+          gameId: new Types.ObjectId(gameId),
+          createdAt: { $gte: from, $lte: to },
+        },
+      },
+      {
+        $group: {
+          _id: '$userId',
+          topScore: { $max: '$score' },
+        },
+      },
+      { $sort: { topScore: -1 } },
+      { $limit: limit ? parseInt(limit, 10) : 10 },
+    ]);
+  }
 }

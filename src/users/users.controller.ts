@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/auth/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -37,9 +36,10 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  remove(@User('id') id: string) {
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles([Role.USER, Role.ADMIN])
+  @Delete()
+  remove(@User() id: string) {
     return this.usersService.remove(id);
   }
 
@@ -49,5 +49,4 @@ export class UsersController {
   promote(@Param('id') userId: string) {
     return this.usersService.upateRole(userId, Role.ADMIN);
   }
-  
 }
