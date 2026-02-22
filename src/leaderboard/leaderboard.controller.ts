@@ -3,7 +3,9 @@ import { LeaderboardService } from './leaderboard.service';
 import { User } from 'src/auth/decorators/user.decorator';
 import { OptionalJwtAuthGuard } from 'src/auth/guards/optional-jwt-auth.guard';
 import { ScoresService } from 'src/scores/scores.service';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('leaderboard')
 export class LeaderboardController {
   constructor(

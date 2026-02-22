@@ -11,6 +11,8 @@ import { RedisModule } from './redis/redis.module';
 import { RedisService } from './redis/redis.service';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { GatewayModule } from './gateway/gateway.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core'
 
 @Module({
   imports: [
@@ -23,8 +25,23 @@ import { GatewayModule } from './gateway/gateway.module';
     RedisModule,
     LeaderboardModule,
     GatewayModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 100,
+        },
+      ],
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, RedisService],
+  providers: [
+    AppService,
+    RedisService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
