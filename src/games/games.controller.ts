@@ -32,7 +32,6 @@ export class GamesController {
     return this.gamesService.findAll();
   }
 
-  @Roles([Role.ADMIN])
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.gamesService.findOne(id);
