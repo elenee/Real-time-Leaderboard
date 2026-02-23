@@ -18,6 +18,25 @@ services:
     environment:
       MONGO_INITDB_DATABASE: leaderboard_db
     restart: always
+  
+  app:
+    build: .
+    container_name: leaderboard-app
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/leaderboard_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: your_secret
+      ADMIN_PASSW: admin123
+      ADMIN_EMAIL: admin@admin.com
+    depends_on:
+      - mongodb
+      - redis
+    restart: always
+
+  
 
 volumes:
   mongo-data:
